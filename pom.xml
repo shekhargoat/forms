@@ -9,5 +9,6 @@
 
     <modules>
 	<module>forms-server</module>
+	<module>MyScreens</module>
     </modules>
 </project>
