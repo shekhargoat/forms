@@ -1,0 +1,5 @@
+INDEX VERSION 1.126
+D:\gitForms\forms\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3106629029.index
+\MyScreens\src\main\java
+D:\gitForms\forms\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3010129045.index
+\MyScreens\src\main\resources
