@@ -1,9 +1,15 @@
 package com.forms.server.entities;
 
-import java.io.Serializable;
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 /**
@@ -12,11 +18,8 @@ import java.util.List;
  */
 @Entity
 @Table(name="appuser")
-public class Appuser implements Serializable {
+public class Appuser extends BaseEntity{
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	private int id;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="account_created_on")
@@ -43,23 +46,13 @@ public class Appuser implements Serializable {
 	@Column(name="preferred_language")
 	private String preferredLanguage;
 
-	private String sid;
-
 	private String username;
 
 	//bi-directional many-to-one association to Form
-	@OneToMany(mappedBy="appuser")
+	@OneToMany(mappedBy="appuser",fetch=FetchType.LAZY)
 	private List<Form> forms;
 
 	public Appuser() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public Date getAccountCreatedOn() {
@@ -126,13 +119,6 @@ public class Appuser implements Serializable {
 		this.preferredLanguage = preferredLanguage;
 	}
 
-	public String getSid() {
-		return this.sid;
-	}
-
-	public void setSid(String sid) {
-		this.sid = sid;
-	}
 
 	public String getUsername() {
 		return this.username;

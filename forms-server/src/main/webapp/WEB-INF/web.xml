@@ -1,77 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee     http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
- <display-name>JerseyRESTServer</display-name>
- <filter>
-  <filter-name>ShiroFilter</filter-name>
-  <filter-class>org.apache.shiro.web.servlet.ShiroFilter</filter-class>
- </filter>
- <filter>
-  <!-- The CORS filter with parameters -->
-  <filter-name>CORS</filter-name>
-  <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
-  <!-- Note: All parameters are options, if omitted the CORS 
-		Filter will fall back to the respective default values.
-		-->
-  <init-param>
-   <param-name>cors.allowGenericHttpRequests</param-name>
-   <param-value>true</param-value>
-  </init-param>
-  <!-- Note: If you like to enable CORS to the specific origin(website). You have to mention in param value with comma separated.(e.g.<param-value>www.icallcomm.com, www.sony.com</param-value>)
-		The below init-param will allow access to all origins.
-		-->
-  <init-param>
-   <param-name>cors.allowOrigin</param-name>
-   <param-value>*</param-value>
-  </init-param>
-  <!-- Note: If you like to enable CORS to all kind of HTTP method. You have to mention in param value with comma separated.(e.g.<param-value>*</param-value>)
-		The below init-param will allow access to the specified HTTP methods.
-		-->
-  <init-param>
-   <param-name>cors.supportedMethods</param-name>
-   <param-value>GET, HEAD, POST, PUT, DELETE, OPTIONS</param-value>
-  </init-param>
-  <init-param>
-   <param-name>cors.supportedHeaders</param-name>
-   <param-value>*</param-value>
-  </init-param>
- </filter>
- <filter-mapping>
-  <filter-name>ShiroFilter</filter-name>
-  <url-pattern>/*</url-pattern>
- </filter-mapping>
- <filter-mapping>
-  <!-- CORS Filter mapping to URL -->
-  <filter-name>CORS</filter-name>
-  <url-pattern>/*</url-pattern>
-  <!-- Note: This url starts after the context-path -->
- </filter-mapping>
- <listener>
-  <listener-class>org.apache.shiro.web.env.EnvironmentLoaderListener</listener-class>
- </listener>
- <servlet>
-  <servlet-name>Jersey REST Service</servlet-name>
-  <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-  <init-param>
-   <param-name>com.sun.jersey.config.property.packages</param-name>
-   <param-value>com.avilyne.rest.resource</param-value>
-  </init-param>
-  <load-on-startup>1</load-on-startup>
- </servlet>
- <servlet-mapping>
-  <servlet-name>Jersey REST Service</servlet-name>
-  <url-pattern>/rest/*</url-pattern>
- </servlet-mapping>
- <welcome-file-list>
-  <welcome-file>/index.jsp</welcome-file>
- </welcome-file-list>
- <resource-env-ref>
-  <resource-env-ref-name>MySQL DB Connection</resource-env-ref-name>
-  <resource-env-ref-type>ds/FormsDS</resource-env-ref-type>
- </resource-env-ref>
- <persistence-context-ref>
-  <persistence-context-ref-name>persistence/FormsDS</persistence-context-ref-name>
-  <persistence-unit-name>FormsDS</persistence-unit-name>
-  <persistence-context-type>Transaction</persistence-context-type>
- </persistence-context-ref>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+           version="3.0">
+    <servlet>
+        <servlet-name>Resteasy</servlet-name>
+        <servlet-class>
+            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        </servlet-class>
+        <init-param>
+            <param-name>resteasy.servlet.mapping.prefix</param-name>
+            <param-value>/forms</param-value>
+        </init-param>
+        <init-param>
+            <param-name>resteasy.resources</param-name>
+            <param-value>
+                com.forms.server.service.FormLoginService
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>resteasy.providers</param-name>
+            <param-value>
+                org.codehaus.jackson.jaxrs.JacksonJsonProvider
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Resteasy</servlet-name>
+        <url-pattern>/forms/*</url-pattern>
+    </servlet-mapping>
 </web-app>
