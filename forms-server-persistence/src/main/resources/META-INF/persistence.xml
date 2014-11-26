@@ -8,5 +8,14 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"></property>
 			<property name="hibernate.show_sql" value="true"/>
 		</properties>
+		<class>com.forms.server.entities.Appuser</class>
+		<class>com.forms.server.entities.District</class>
+		<class>com.forms.server.entities.FinancialYear</class>
+		<class>com.forms.server.entities.Form</class>
+		<class>com.forms.server.entities.Question</class>
+		<class>com.forms.server.entities.Section</class>
+		<class>com.forms.server.entities.SectionHasQuestion</class>
+		<class>com.forms.server.entities.SectionHasQuestionPK</class>
+		<class>com.forms.server.entities.SocietyName</class>
 	</persistence-unit>
 </persistence>

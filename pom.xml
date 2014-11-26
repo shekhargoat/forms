@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <modules>
+	<module>forms-server-persistence</module>
 	<module>forms-server</module>
 	<module>MyScreens</module>
     </modules>

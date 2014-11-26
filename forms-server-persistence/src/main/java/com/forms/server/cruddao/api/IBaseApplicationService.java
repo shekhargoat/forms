@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 
 import com.forms.server.exception.persistence.RecordNotFoundException;
 
-public interface IApplicationService {
+public interface IBaseApplicationService {
 	
 	public EntityManager getEm();
 

@@ -19,15 +19,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.forms.server.common.FormsConstants;
-import com.forms.server.cruddao.api.IApplicationService;
+import com.forms.server.cruddao.api.IBaseApplicationService;
 import com.forms.server.exception.ApplicationException;
 import com.forms.server.exception.persistence.RecordNotFoundException;
 
 @Stateless
-@Local(IApplicationService.class)
-public class ApplicationService implements IApplicationService {
+@Local(IBaseApplicationService.class)
+public class BaseApplicationServiceImpl implements IBaseApplicationService {
 	
-	private Logger logger=LoggerFactory.getLogger(ApplicationService.class);
+	private Logger logger=LoggerFactory.getLogger(BaseApplicationServiceImpl.class);
 	
 	@PersistenceContext(unitName = "FormsDS")
 	EntityManager em;
