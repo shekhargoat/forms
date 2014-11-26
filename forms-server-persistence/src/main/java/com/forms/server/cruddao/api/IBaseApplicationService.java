@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import com.forms.server.exception.ApplicationException;
 import com.forms.server.exception.persistence.RecordNotFoundException;
 
 public interface IBaseApplicationService {
@@ -31,28 +32,28 @@ public interface IBaseApplicationService {
 
 	public List findByNamedNativeQuery(String queryName, Map<String, Object> parameters);
 
-	public Object findSingleByNamedQuery(String queryName,Map<String, Object> parameters) throws RecordNotFoundException;
+	public Object findSingleByNamedQuery(String queryName,Map<String, Object> parameters) throws RecordNotFoundException, ApplicationException;
 
 	public List findByNamedQuery(String queryName, Map<String, Object> parameters,int resultLimit);
 
 	public List findByNamedNativeQuery(String queryName,
 			Map<String, Object> parameters, int resultLimit);
 
-	public <T> T getEntityBySid(Class<T> clazz, String sid) throws RecordNotFoundException;
+	public <T> T getEntityBySid(Class<T> clazz, String sid) throws RecordNotFoundException, ApplicationException;
 
-	public <T> Integer getIdBySid(Class<T> clazz, String sid);
+	public <T> Integer getIdBySid(Class<T> clazz, String sid) throws RecordNotFoundException, ApplicationException;
 
-	public <T> String getSidById(Class<T> clazz, Integer id) throws RecordNotFoundException;
+	public <T> String getSidById(Class<T> clazz, Integer id) throws RecordNotFoundException, ApplicationException;
 	public <T> void persist(T t);
 	
 
-	public <T> T findEntityById(Class entityName, Integer id) throws RecordNotFoundException;
+	public <T> T findEntityById(Class entityName, Integer id) throws RecordNotFoundException, ApplicationException;
 
 	public <T, U> U getToByNamedQuery(Class<T> entityClass, Class<U> dtoClass,
-			String namedQuery, Map<String, Object> parameters, String mapId) throws RecordNotFoundException;
+			String namedQuery, Map<String, Object> parameters, String mapId) throws RecordNotFoundException, ApplicationException;
 
 	public <T, U> U getToByNamedQuery(Class<T> entityClass, Class<U> dtoClass,
-			String namedQuery, Map<String, Object> parameters) throws RecordNotFoundException;
+			String namedQuery, Map<String, Object> parameters) throws RecordNotFoundException,ApplicationException;
 
-	public <T> T findEntityBySid(Class<T> clazz, String sid) throws RecordNotFoundException;
+	public <T> T findEntityBySid(Class<T> clazz, String sid) throws RecordNotFoundException, ApplicationException;
 }

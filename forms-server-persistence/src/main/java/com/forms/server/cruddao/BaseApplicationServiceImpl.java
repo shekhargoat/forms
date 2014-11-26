@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -195,14 +196,14 @@ public class BaseApplicationServiceImpl implements IBaseApplicationService {
 	
 
 	@Override
-	public <T> T findEntityBySid(Class<T> clazz, String sid) throws RecordNotFoundException {
+	public <T> T findEntityBySid(Class<T> clazz, String sid) throws RecordNotFoundException,ApplicationException {
 		Query query=null;
 		try{
 			query = (Query) em.createQuery(" from "+clazz.getSimpleName()+" t where hex(t.sid) = :sid");
 			query.setParameter("sid", sid);
 			return (T) query.getSingleResult();
 		}catch (NoResultException e){
-			throw new RecordNotFoundException("No Entity found for ID : \t".concat(String.valueOf(id)),e);
+			throw new RecordNotFoundException("No Entity found for ID : \t".concat(sid),e);
 		}catch (Exception e){
 			throw new ApplicationException("",e);
 		}
@@ -216,8 +217,9 @@ public class BaseApplicationServiceImpl implements IBaseApplicationService {
 	}
 	
 	@Override
-	public <T> T findEntityById(Class entityName, Integer id)throws RecordNotFoundException{
+	public <T> T findEntityById(Class entityName, Integer id)throws RecordNotFoundException,ApplicationException{
 		logger.trace("findEntityById(Class, int) - start"); 
+		if(id == null || id <=0)throw new IllegalArgumentException("ID cannot be Null or Zero");
 		try{
 			Query query = em.createQuery("select e from "+ entityName.getSimpleName() + " e where e.id = :id");
 			query.setParameter("id", id);
@@ -226,16 +228,15 @@ public class BaseApplicationServiceImpl implements IBaseApplicationService {
 			return returnT;
 		}catch(NoResultException noResultException){
 			logger.error("findEntityById(Class, int)-{}", noResultException.getMessage()); 
-			throw new RecordNotFoundException(ApplicationConstants.ES_AM_PR_R_004);
+			throw new RecordNotFoundException("Record not found for ".concat(String.valueOf(id)),noResultException);
 		}catch (Exception exception) {
 			logger.error("findEntityById(Class, int)-{}", exception.getMessage()); 
-			throw new RecordNotFoundException(ApplicationConstants.ES_AM_PR_R_004);
+			throw new ApplicationException("",exception);
 		}
 	}
 	
 	@Override
-	public <T, U> U getToByNamedQuery(Class<T> entityClass, Class<U> dtoClass,
-			String namedQuery, Map<String, Object> parameters, String mapId)throws ApplicationException {
+	public <T, U> U getToByNamedQuery(Class<T> entityClass, Class<U> dtoClass,String namedQuery, Map<String, Object> parameters, String mapId)throws RecordNotFoundException,ApplicationException {
 		logger.trace("getToByNamedQuery(Class<T>, Class<U>, String, Map<String, Object>) - Start");
 		U to = null;
 		T entity = (T) findSingleByNamedQuery(namedQuery, parameters);
@@ -248,8 +249,7 @@ public class BaseApplicationServiceImpl implements IBaseApplicationService {
 	
 	@Override
 	public <T, U> U getToByNamedQuery(Class<T> entityClass, Class<U> dtoClass,
-			String namedQuery, Map<String, Object> parameters)
-			throws ApplicationException {
+			String namedQuery, Map<String, Object> parameters)throws RecordNotFoundException,ApplicationException {
 		logger.trace("getToByNamedQuery(Class<T>, Class<U>, String) - Start");
 		U to = null;
 		T entity = (T) findSingleByNamedQuery(namedQuery, parameters);

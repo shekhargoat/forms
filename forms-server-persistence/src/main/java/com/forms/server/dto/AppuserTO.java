@@ -3,11 +3,9 @@ package com.forms.server.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-public class AppuserTO implements Serializable{
+public class AppuserTO extends SuperCommonDTO{
 	
 	private static final long serialVersionUID = 1L;
-
-	private int id;
 
 	private Date accountCreatedOn;
 
@@ -25,8 +23,6 @@ public class AppuserTO implements Serializable{
 
 	private String preferredLanguage;
 
-	private String sid;
-
 	private String username;
 
 	//bi-directional many-to-one association to Form
@@ -34,14 +30,6 @@ public class AppuserTO implements Serializable{
 	private List<Form> forms;*/
 
 	public AppuserTO() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public Date getAccountCreatedOn() {
@@ -106,14 +94,6 @@ public class AppuserTO implements Serializable{
 
 	public void setPreferredLanguage(String preferredLanguage) {
 		this.preferredLanguage = preferredLanguage;
-	}
-
-	public String getSid() {
-		return this.sid;
-	}
-
-	public void setSid(String sid) {
-		this.sid = sid;
 	}
 
 	public String getUsername() {

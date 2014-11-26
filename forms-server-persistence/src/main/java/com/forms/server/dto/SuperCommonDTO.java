@@ -2,11 +2,6 @@ package com.forms.server.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
-import javax.naming.InitialContext;
-
-import com.dto.persistence.IDtoPersistence;
-import com.dto.utils.DtoMappingUtils;
-
 // TODO: Auto-generated Javadoc
 
 /**
@@ -30,15 +25,6 @@ public abstract class SuperCommonDTO implements Serializable {
 	public String sid;
 	
 	public SuperCommonDTO() {
-		try {
-			Object obj = new InitialContext().lookup("java:global/repositoryservice/repositoryservice-ejb/DtoPersistenceImpl!com.dto.persistence.IDtoPersistence");
-			if(obj instanceof IDtoPersistence){
-				dtoPersistence = (com.dto.persistence.IDtoPersistence) obj;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-//		dtoPersistence = ProducerUtils.getDtoPersistenceRemote();
 	}
 	
 	/**
