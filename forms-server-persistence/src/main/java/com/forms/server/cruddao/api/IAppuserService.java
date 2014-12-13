@@ -1,8 +1,10 @@
 package com.forms.server.cruddao.api;
 
 import com.forms.server.dto.AppuserTO;
+import com.forms.server.dto.SecurityQuestionsTO;
 import com.forms.server.exception.ApplicationException;
 import com.forms.server.exception.persistence.RecordNotFoundException;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -39,5 +41,32 @@ public interface IAppuserService {
 	 * @throws ApplicationException the application exception
 	 */
 	public AppuserTO findAppuserBySid(String sid)throws RecordNotFoundException,ApplicationException;
-
+        
+        /**
+         * Authenticates the user used for login
+         * 
+         * @param username
+         * @param password
+         * @return
+         * @throws ApplicationException
+         */
+        public boolean authenticateUser(String username,String password) throws ApplicationException;
+        
+        /**
+         * Checks if the password exists
+         * 
+         * @param password
+         * @return
+         * @throws RecordNotFoundException
+         * @throws ApplicationException
+         */
+        public boolean doesPwdExists(String password)throws RecordNotFoundException, ApplicationException;
+        
+        /**
+         * Get all security questions
+         * 
+         * @return List of all Security Questions in the DB
+         * @throws RecordNotFoundException
+         */
+        public List<SecurityQuestionsTO> getAllSecurityQuestions() throws RecordNotFoundException; 
 }

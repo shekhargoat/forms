@@ -38,8 +38,49 @@ public class FormLoginService {
 		}
 		return Response.status(200).build();
 	}
+        
+        @Path("/validate/signup/pwd/{pwd}")
+        @GET
+	public Response verifyPassword(@PathParam("pwd")String password){
+            try {
+                boolean flg=appuserService.doesPwdExists(password);
+                if(flg)return Response.status(Response.Status.PRECONDITION_FAILED).build();
+                else
+                    return Response.status(Response.Status.OK).build();
+            } catch (ApplicationException ex) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+        
+        @Path("/validate/signup/username/{username}")
+        @GET
+        public Response verifyUsername(@PathParam("username")String username){
+            AppuserTO appuserTO = null;
+            try {
+                appuserTO = appuserService.findAppuserByUsername(username);
+            } catch (ApplicationException ex) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+            if(appuserTO==null)return Response.status(Response.Status.OK).build();
+            else
+                return Response.status(Response.Status.PRECONDITION_FAILED).build();
+        }
+        
+        
+        @Path("/validate/security/questions")
+        @GET
+        @Produces(MediaType.APPLICATION_JSON)
+        public Response getSecurityQuestions(){
+            try {
+                return Response.status(Response.Status.OK).entity(appuserService.getAllSecurityQuestions()).build();
+            } catch (RecordNotFoundException ex) {
+                return Response.status(Response.Status.NO_CONTENT).build();
+            } catch(Exception e){
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+        }
 	
-	
+        
 	private <T> Response buildSuccessResponse(T value){
 		if(value != null)
 			return Response.status(200).entity(value).build();

@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -18,8 +20,17 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="appuser")
+@NamedQueries({
+    @NamedQuery(name = Appuser.FIND_BY_NAME, query = "from Appuser a where a.username=:param"),
+    @NamedQuery(name = Appuser.FIND_BY_SID,query = "from Appsuer a where hex(a.sid)=:param"),
+    @NamedQuery(name = Appuser.FIND_BY_PWD,query = "from Appsuer a where a.password=:param")
+})
 public class Appuser extends BaseEntity{
 	private static final long serialVersionUID = 1L;
+        private static final String PREFIX="com.forms.server.entities.Appuser.";
+        public static final String FIND_BY_NAME=PREFIX+"findByName";
+        public static final String FIND_BY_SID=PREFIX+"findBySid";
+        public static final String FIND_BY_PWD=PREFIX+"findByPassword";
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="account_created_on")

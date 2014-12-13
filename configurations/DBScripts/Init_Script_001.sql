@@ -2,11 +2,11 @@ CREATE SCHEMA IF NOT EXISTS `forms_001` DEFAULT CHARACTER SET utf8 COLLATE utf8_
 USE `forms_001` ;
 
 -- -----------------------------------------------------
--- Table `forms_001`.`appuser`
+-- Table `appuser`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`appuser` ;
+DROP TABLE IF EXISTS `appuser` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`appuser` (
+CREATE TABLE IF NOT EXISTS `appuser` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(100) NOT NULL,
   `password` VARCHAR(100) NULL,
@@ -26,11 +26,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `forms_001`.`districts`
+-- Table `districts`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`districts` ;
+DROP TABLE IF EXISTS `districts` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`districts` (
+CREATE TABLE IF NOT EXISTS `districts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `state_name` ENUM('KAR','MAH') NOT NULL,
@@ -41,11 +41,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `forms_001`.`society_name`
+-- Table `society_name`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`society_name` ;
+DROP TABLE IF EXISTS `society_name` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`society_name` (
+CREATE TABLE IF NOT EXISTS `society_name` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `society_name` TEXT NOT NULL,
   `society_code` VARCHAR(45) NOT NULL,
@@ -57,18 +57,18 @@ CREATE TABLE IF NOT EXISTS `forms_001`.`society_name` (
   UNIQUE INDEX `sid_UNIQUE` (`sid` ASC),
   CONSTRAINT `fk_society_name_1`
     FOREIGN KEY (`id`)
-    REFERENCES `forms_001`.`districts` (`id`)
+    REFERENCES `districts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `forms_001`.`financial_year`
+-- Table `financial_year`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`financial_year` ;
+DROP TABLE IF EXISTS `financial_year` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`financial_year` (
+CREATE TABLE IF NOT EXISTS `financial_year` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(15) NOT NULL,
   `financial_year_duration` VARCHAR(45) NULL,
@@ -77,11 +77,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `forms_001`.`forms`
+-- Table `forms`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`forms` ;
+DROP TABLE IF EXISTS `forms` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`forms` (
+CREATE TABLE IF NOT EXISTS `forms` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `form_name` VARCHAR(45) NOT NULL,
   `appuser_id` INT NOT NULL COMMENT '				',
@@ -100,28 +100,28 @@ CREATE TABLE IF NOT EXISTS `forms_001`.`forms` (
   UNIQUE INDEX `sid_UNIQUE` (`sid` ASC),
   CONSTRAINT `fk_appuser_has_forms_1`
     FOREIGN KEY (`appuser_id`)
-    REFERENCES `forms_001`.`appuser` (`id`)
+    REFERENCES `appuser` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_appuser_has_forms_2`
     FOREIGN KEY (`financial_year_id`)
-    REFERENCES `forms_001`.`financial_year` (`id`)
+    REFERENCES `financial_year` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_appuser_has_forms_3`
     FOREIGN KEY (`society_id`)
-    REFERENCES `forms_001`.`society_name` (`id`)
+    REFERENCES `society_name` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `forms_001`.`question`
+-- Table `question`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`question` ;
+DROP TABLE IF EXISTS `question` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`question` (
+CREATE TABLE IF NOT EXISTS `question` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `sid` BINARY(32) NOT NULL,
   `question_text` TEXT NOT NULL,
@@ -133,11 +133,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `forms_001`.`section`
+-- Table `section`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`section` ;
+DROP TABLE IF EXISTS `section` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`section` (
+CREATE TABLE IF NOT EXISTS `section` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `section_name` VARCHAR(100) NOT NULL,
   `sid` BINARY(32) NOT NULL,
@@ -147,37 +147,74 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `forms_001`.`form_has_sections`
+-- Table `form_has_sections`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`form_has_sections` ;
+DROP TABLE IF EXISTS `form_has_sections` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`form_has_sections` (
+CREATE TABLE IF NOT EXISTS `form_has_sections` (
   `society_id` INT NOT NULL,
   `section_id` INT NOT NULL,
   PRIMARY KEY (`society_id`, `section_id`),
   INDEX `fk_form_has_sections_2_idx` (`section_id` ASC),
   CONSTRAINT `fk_form_has_sections_1`
     FOREIGN KEY (`society_id`)
-    REFERENCES `forms_001`.`society_name` (`id`)
+    REFERENCES `society_name` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_form_has_sections_2`
     FOREIGN KEY (`section_id`)
-    REFERENCES `forms_001`.`section` (`id`)
+    REFERENCES `section` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `forms_001`.`section_has_questions`
+-- Table `section_has_questions`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `forms_001`.`section_has_questions` ;
+DROP TABLE IF EXISTS `section_has_questions` ;
 
-CREATE TABLE IF NOT EXISTS `forms_001`.`section_has_questions` (
+CREATE TABLE IF NOT EXISTS `section_has_questions` (
   `section_id` INT NOT NULL,
   `question_id` INT NOT NULL,
   `is_mandatory` TINYINT(1) NULL,
   `default_answer` VARCHAR(45) NULL,
   PRIMARY KEY (`section_id`, `question_id`))
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `appuser_security_questions_answer`
+-- -----------------------------------------------------
+CREATE TABLE `appuser_security_questions_answer` (
+  `appuser_id` INT NOT NULL,
+  `security_question_id` INT NOT NULL,
+  `answer` MEDIUMTEXT NULL,
+  PRIMARY KEY (`appuser_id`, `security_question_id`));
+
+ALTER TABLE `appuser_security_questions_answer` 
+ADD INDEX `fk_appuser_security_questions_answer_2_idx` (`security_question_id` ASC);
+ALTER TABLE `appuser_security_questions_answer` 
+ADD CONSTRAINT `fk_appuser_security_questions_answer_1`
+  FOREIGN KEY (`appuser_id`)
+  REFERENCES `appuser` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_appuser_security_questions_answer_2`
+  FOREIGN KEY (`security_question_id`)
+  REFERENCES `security_questions` (`id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+-- -----------------------------------------------------
+-- Table `security_questions`
+-- -----------------------------------------------------
+
+CREATE TABLE `security_questions` (
+  `id` int(11) NOT NULL,
+  `sid` binary(32) NOT NULL,
+  `question` mediumtext NOT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sid_UNIQUE` (`sid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
