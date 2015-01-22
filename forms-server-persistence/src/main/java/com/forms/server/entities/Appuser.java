@@ -23,7 +23,8 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = Appuser.FIND_BY_NAME, query = "from Appuser a where a.username=:param"),
     @NamedQuery(name = Appuser.FIND_BY_SID,query = "from Appsuer a where hex(a.sid)=:param"),
-    @NamedQuery(name = Appuser.FIND_BY_PWD,query = "from Appsuer a where a.password=:param")
+    @NamedQuery(name = Appuser.FIND_BY_PWD,query = "from Appsuer a where a.password=:param"),
+    @NamedQuery(name = Appuser.VERIFICATION_QUERY,query = "from Appuser a where a.activationKey=:param and hex(a.sid)=:param1")
 })
 public class Appuser extends BaseEntity{
 	private static final long serialVersionUID = 1L;
@@ -31,6 +32,8 @@ public class Appuser extends BaseEntity{
         public static final String FIND_BY_NAME=PREFIX+"findByName";
         public static final String FIND_BY_SID=PREFIX+"findBySid";
         public static final String FIND_BY_PWD=PREFIX+"findByPassword";
+        public static final String VERIFICATION_QUERY=PREFIX+"verificationQuery";
+        
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="account_created_on")
@@ -47,7 +50,7 @@ public class Appuser extends BaseEntity{
 	private String firstName;
 
 	@Column(name="is_enabled")
-	private byte isEnabled;
+	private boolean isEnabled;
 
 	@Column(name="last_name")
 	private String lastName;
@@ -58,6 +61,9 @@ public class Appuser extends BaseEntity{
 	private String preferredLanguage;
 
 	private String username;
+
+        @Column(name="activation_key")
+	private String activationKey;
 
 	//bi-directional many-to-one association to Form
 	@OneToMany(mappedBy="appuser",fetch=FetchType.LAZY)
@@ -98,11 +104,11 @@ public class Appuser extends BaseEntity{
 		this.firstName = firstName;
 	}
 
-	public byte getIsEnabled() {
+	public boolean getIsEnabled() {
 		return this.isEnabled;
 	}
 
-	public void setIsEnabled(byte isEnabled) {
+	public void setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
 
@@ -147,18 +153,12 @@ public class Appuser extends BaseEntity{
 		this.forms = forms;
 	}
 
-	public Form addForm(Form form) {
-		getForms().add(form);
-		form.setAppuser(this);
+        public String getActivationKey() {
+            return activationKey;
+        }
 
-		return form;
-	}
-
-	public Form removeForm(Form form) {
-		getForms().remove(form);
-		form.setAppuser(null);
-
-		return form;
-	}
-
+        public void setActivationKey(String activationKey) {
+            this.activationKey = activationKey;
+        }
+        
 }

@@ -15,7 +15,7 @@ public class AppuserTO extends SuperCommonDTO{
 
 	private String firstName;
 
-	private byte isEnabled;
+	private boolean isEnabled;
 
 	private String lastName;
 
@@ -64,11 +64,11 @@ public class AppuserTO extends SuperCommonDTO{
 		this.firstName = firstName;
 	}
 
-	public byte getIsEnabled() {
+	public boolean getIsEnabled() {
 		return this.isEnabled;
 	}
 
-	public void setIsEnabled(byte isEnabled) {
+	public void setIsEnabled(boolean isEnabled) {
 		this.isEnabled = isEnabled;
 	}
 

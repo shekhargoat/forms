@@ -2,7 +2,9 @@ package com.forms.server.cruddao.api;
 
 import com.forms.server.dto.AppuserTO;
 import com.forms.server.dto.SecurityQuestionsTO;
+import com.forms.server.exception.ActivationKeyExpired;
 import com.forms.server.exception.ApplicationException;
+import com.forms.server.exception.InvalidActivationKey;
 import com.forms.server.exception.persistence.RecordNotFoundException;
 import java.util.List;
 
@@ -69,4 +71,8 @@ public interface IAppuserService {
          * @throws RecordNotFoundException
          */
         public List<SecurityQuestionsTO> getAllSecurityQuestions() throws RecordNotFoundException; 
+        
+        public boolean verifyActivationLink(String appuserSid,String activationKey) throws InvalidActivationKey, ActivationKeyExpired, ApplicationException;
+        
+        public boolean userSignup(AppuserTO appuserTO)throws IllegalArgumentException;
 }

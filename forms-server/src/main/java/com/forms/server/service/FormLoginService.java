@@ -13,9 +13,10 @@ import com.forms.server.cruddao.api.IAppuserService;
 import com.forms.server.dto.AppuserTO;
 import com.forms.server.exception.ApplicationException;
 import com.forms.server.exception.persistence.RecordNotFoundException;
+import javax.ws.rs.HeaderParam;
 
 
-@Path("/v1")
+@Path("/v1/login")
 public class FormLoginService {
 	
 	@EJB
@@ -39,45 +40,20 @@ public class FormLoginService {
 		return Response.status(200).build();
 	}
         
-        @Path("/validate/signup/pwd/{pwd}")
-        @GET
-	public Response verifyPassword(@PathParam("pwd")String password){
-            try {
-                boolean flg=appuserService.doesPwdExists(password);
-                if(flg)return Response.status(Response.Status.PRECONDITION_FAILED).build();
-                else
-                    return Response.status(Response.Status.OK).build();
-            } catch (ApplicationException ex) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-            }
-        }
         
-        @Path("/validate/signup/username/{username}")
+        
+        @Path("/authenticate")
         @GET
-        public Response verifyUsername(@PathParam("username")String username){
-            AppuserTO appuserTO = null;
+        public Response authenticateUser(@HeaderParam("username")String username,@HeaderParam("password")String password){
+            boolean flgLogin = false;
             try {
-                appuserTO = appuserService.findAppuserByUsername(username);
+                flgLogin = appuserService.authenticateUser(username, password);
             } catch (ApplicationException ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-            if(appuserTO==null)return Response.status(Response.Status.OK).build();
+            if(flgLogin)return Response.status(Response.Status.OK).build();
             else
-                return Response.status(Response.Status.PRECONDITION_FAILED).build();
-        }
-        
-        
-        @Path("/validate/security/questions")
-        @GET
-        @Produces(MediaType.APPLICATION_JSON)
-        public Response getSecurityQuestions(){
-            try {
-                return Response.status(Response.Status.OK).entity(appuserService.getAllSecurityQuestions()).build();
-            } catch (RecordNotFoundException ex) {
-                return Response.status(Response.Status.NO_CONTENT).build();
-            } catch(Exception e){
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-            }
+                return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 	
         

@@ -217,4 +217,10 @@ CREATE TABLE `security_questions` (
   `status` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sid_UNIQUE` (`sid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) 
+
+
+ALTER TABLE `forms_001`.`appuser` 
+ADD COLUMN `activation_key` VARCHAR(32) NOT NULL AFTER `sid`,
+ADD UNIQUE INDEX `activation_key_UNIQUE` (`activation_key` ASC);
+
