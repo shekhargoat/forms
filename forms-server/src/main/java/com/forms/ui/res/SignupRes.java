@@ -1,19 +1,13 @@
 package com.forms.ui.res;
 
-
-import java.util.Date;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
+import java.util.List;
+import com.forms.server.dto.SecurityQuestionsTO;
+import com.forms.server.dto.SuperCommonDTO;
 /**
  *
- * @author SSD
+ * @author Vikash
  */
-public class SignupRes {
+public class SignupRes extends SuperCommonDTO{
 
     private String contactPhoneNumer;
 
@@ -27,9 +21,11 @@ public class SignupRes {
 
     private String username;
     
-    private String securityQuestionSid;
+    private List<SecurityQuestionsTO> securityQuestionsTOs;
     
     private String securityAnswer;
+    
+    private boolean isEnabled;
 
     public String getContactPhoneNumer() {
         return contactPhoneNumer;
@@ -79,15 +75,24 @@ public class SignupRes {
         this.username = username;
     }
 
-    public String getSecurityQuestionSid() {
-        return securityQuestionSid;
-    }
+    public List<SecurityQuestionsTO> getSecurityQuestionsTOs() {
+		return securityQuestionsTOs;
+	}
 
-    public void setSecurityQuestionSid(String securityQuestionSid) {
-        this.securityQuestionSid = securityQuestionSid;
-    }
+	public void setSecurityQuestionsTOs(
+			List<SecurityQuestionsTO> securityQuestionsTOs) {
+		this.securityQuestionsTOs = securityQuestionsTOs;
+	}
 
-    public String getSecurityAnswer() {
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
+
+	public String getSecurityAnswer() {
         return securityAnswer;
     }
 

@@ -1,5 +1,6 @@
 package com.forms.server.cruddao;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,241 +24,245 @@ import com.forms.server.common.FormsConstants;
 import com.forms.server.cruddao.api.IBaseApplicationService;
 import com.forms.server.exception.ApplicationException;
 import com.forms.server.exception.persistence.RecordNotFoundException;
-
+/**
+ * @author vikash
+ * @param <T>
+ */
 @Stateless
 @Local(IBaseApplicationService.class)
-public class BaseApplicationServiceImpl implements IBaseApplicationService {
+public class BaseApplicationServiceImpl<T extends Serializable> implements IBaseApplicationService<T> {
 	
 	private Logger logger=LoggerFactory.getLogger(BaseApplicationServiceImpl.class);
 	
 	@PersistenceContext(unitName = "FormsDS")
-	EntityManager em;
+	EntityManager entityManager;
 
 	@EJB(beanName = "DozerMan")
 	DozerMan dozerMan;
 	
-	public EntityManager getEm() {
-		return em;
+	public EntityManager getEntityManager() {
+		return entityManager;
 	}
 
-	public void setEm(EntityManager em) {
-		this.em = em;
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
-	
-	@TransactionAttribute(TransactionAttributeType.MANDATORY)
-	public  <T> T create(T t) {
-		this.em.persist(t);
-		this.em.flush();
-		this.em.refresh(t);
+
+	public void create(T t) throws ApplicationException {
+		try{
+			entityManager.merge(t);
+		}catch(Exception exception){
+			logger.error("create(T)", exception); 
+			throw new ApplicationException(FormsConstants.SERVER_ERROR, exception);
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public T find(Integer id, Class entityClass) throws RecordNotFoundException {
+		return (T)entityManager.find(entityClass,id);
+	}
+
+	public T update(T t) throws ApplicationException {
+		T updatedObject=null;
+		try{
+			updatedObject = entityManager.merge(t);
+		}catch (Exception exception){
+			logger.error("update throwing exception", exception); 
+			throw new ApplicationException(FormsConstants.SERVER_ERROR,exception);
+		}
+        return updatedObject;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void delete(Integer id, Class type) throws ApplicationException {
+		try{
+			T existingObject=(T) entityManager.find(type, id);
+			entityManager.remove(existingObject);
+		}catch(Exception e){
+			logger.error("delete() method, thrwoing exception",e);
+			throw new ApplicationException(FormsConstants.SERVER_ERROR,e);
+		}
+	}
+
+	public List<T> findListByNamedQueryWithoutParam(String queryName) throws ApplicationException {
+		return findListByNamedQueryWithoutParam(queryName,0);
+	}
+
+	@SuppressWarnings("unchecked")
+	public T findSingleByNamedQueryWithoutParam(String queryName) throws RecordNotFoundException {
+		T queryResult=null;
+		try{
+			Query query=entityManager.createNamedQuery(queryName);
+			queryResult=(T) query.getSingleResult();
+		}catch(Exception e){
+			logger.error("findSingleByNamedQueryWithoutParam() throwing exception",e);
+			throw new RecordNotFoundException(FormsConstants.SERVER_ERROR,e);
+		}
+		return queryResult;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<T> findListByNamedQueryWithoutParam(String queryName, int resultLimit) throws ApplicationException {
+		List<T> queryResult=null;
+		try{
+			Query query=entityManager.createNamedQuery(queryName);
+			if (resultLimit>0) {
+				query.setMaxResults(resultLimit);
+			}
+			queryResult=query.getResultList();
+		}catch(Exception e){
+			logger.error("findListByNamedQueryWithoutParam() throwing exception",e);
+			throw new ApplicationException(FormsConstants.SERVER_ERROR,e);
+		}
+		return queryResult;
+	}
+
+	public List<T> findListByNamedQueryWithParam(String queryName,
+			Map<String, Object> parameters) throws ApplicationException {
+		return findListByNamedQueryWithParmAndLimit(queryName,parameters,0);
+	}
+
+	@SuppressWarnings("unchecked")
+	public T findSingleByNamedQueryWithParam(String queryName,
+			Map<String, Object> parameters) throws RecordNotFoundException,
+			ApplicationException {
+		T t = null;
+		try {
+			Set<Map.Entry<String, Object>> rawParameters = null;
+			if (parameters != null) {
+				rawParameters = parameters.entrySet();
+			}
+			Query query = entityManager.createNamedQuery(queryName);
+			for (Map.Entry<String, Object> entry : rawParameters) {
+				query.setParameter(entry.getKey(), entry.getValue());
+			}
+			t = (T) query.getSingleResult();
+		} catch (Exception exception) {
+			throw new ApplicationException(FormsConstants.SERVER_ERROR, exception);
+		}
 		return t;
 	}
 
-	public <T> T find(Object id, Class<T> type) throws RecordNotFoundException {
-		try{
-		return (T) this.em.find(type, id);
-		}catch(Exception e){
-			throw new RecordNotFoundException(e.getMessage(),e);
+	public List<T> findListByNamedQueryWithParmAndLimit(String queryName,
+			Map<String, Object> parameters, int resultLimit) throws ApplicationException {
+		List list = null;
+		Set<Map.Entry<String, Object>> rawParameters = null;
+		if (parameters != null) {
+			rawParameters = parameters.entrySet();
 		}
-	}
-
-	@TransactionAttribute(TransactionAttributeType.MANDATORY)
-	public <T> T update(T t) {
-		return (T) this.em.merge(t);
-	}
-
-	@Override
-	@TransactionAttribute(TransactionAttributeType.MANDATORY)
-	public <T> void delete(Object id, Class<T> type) {
-		Object ref = this.em.getReference(type, id);
-		this.em.remove(ref);
-	}
-
-	@Override
-	public List<Object> findByNamedQuery(String queryName) {
-		return this.em.createNamedQuery(queryName).getResultList();
-	}
-
-	@Override
-	public Object findSingleByNamedQuery(String queryName) {
-		return this.em.createNamedQuery(queryName).getSingleResult();
-	}
-
-	@Override
-	public List<Object> findByNamedQuery(String queryName, int resultLimit) {
-		return this.em.createNamedQuery(queryName).setMaxResults(resultLimit).getResultList();
-	}
-
-	@Override
-	public List findByNamedQuery(String queryName,Map<String, Object> parameters) {
-		return findByNamedQuery(queryName, parameters, 0);
-	}
-
-	@Override
-	public List findByNamedNativeQuery(String queryName,Map<String, Object> parameters) {
-		return findByNamedNativeQuery(queryName, parameters, 0);
-	}
-
-	@Override
-	public Object findSingleByNamedQuery(String queryName,Map<String, Object> parameters) throws ApplicationException {
-		Set<Map.Entry<String, Object>> rawParameters = parameters.entrySet();
-		Query query = this.em.createNamedQuery(queryName);
-
-		for (Map.Entry<String, Object> entry : rawParameters) {
-			query.setParameter(entry.getKey(), entry.getValue());
-		}
-
-		try {
-			return query.getSingleResult();
-		} catch (NoResultException nre) {
-			return null;
-		} catch (Exception e){
-			throw new ApplicationException("",e);
-		}
-	}
-
-	@Override
-	public List<Object> findByNamedQuery(String queryName,Map<String, Object> parameters, int resultLimit) {
-		Set<Map.Entry<String, Object>> rawParameters = parameters.entrySet();
-		Query query = this.em.createNamedQuery(queryName);
-		if (resultLimit > 0)
-			query.setMaxResults(resultLimit);
-
-		for (Map.Entry<String, Object> entry : rawParameters) {
-			query.setParameter(entry.getKey(), entry.getValue());
-		}
-
-		return query.getResultList();
-	}
-
-	@Override
-	public List findByNamedNativeQuery(String queryName,Map<String, Object> parameters, int resultLimit) {
-		Set<Map.Entry<String, Object>> rawParameters = parameters.entrySet();
-		Query query = this.em.createNamedQuery(queryName);
-		if (resultLimit > 0)
-			query.setMaxResults(resultLimit);
-
-		for (Map.Entry<String, Object> entry : rawParameters) {
-			try {
-				int pos = Integer.valueOf(entry.getKey());
-				query.setParameter(pos, entry.getValue());
-			} catch (NumberFormatException ex) {
-
+		Query query = entityManager.createNamedQuery(queryName);
+		if(rawParameters != null){
+			for (Map.Entry<String, Object> entry : rawParameters) {
+				query.setParameter(entry.getKey(), entry.getValue());
 			}
 		}
-
-		return query.getResultList();
-	}
-
-		
-	@Override
-	public <T> T getEntityBySid(Class<T> clazz, String sid) throws RecordNotFoundException,ApplicationException {
-		try{
-			Query query = (Query) em.createQuery("from "+clazz.getSimpleName()+" t where hex(t.sid) = :sid");
-			query.setParameter("sid", sid);
-			return (T) query.getSingleResult();
-		}catch (NoResultException e) {
-			throw new RecordNotFoundException("Entity Not Found", e);
-		} catch (Exception e){
-			throw new ApplicationException("",e);
+		if (resultLimit > 0) {
+			query.setMaxResults(resultLimit);
 		}
+		try {
+			list = (List<T>) query.getResultList();
+		}catch (Exception exception){
+			logger.error("findListByNamedQueryWithParmAndLimit() -error is {}", exception.getMessage());
+			throw new ApplicationException(FormsConstants.SERVER_ERROR, exception);
+		}
+		return list;
+	}
+	public T getEntityBySid(Class clazz, String sid)
+			throws RecordNotFoundException, ApplicationException {
+		return findEntityBySid(clazz,sid);
 	}
 
-	@Override
-	public <T> Integer getIdBySid(Class<T> clazz, String sid)throws RecordNotFoundException,ApplicationException  {
-		Query query=null;
+	public Integer getIdBySid(Class entityName, String sid)
+			throws ApplicationException {
 		Integer id = null;
 		try{
-			query = (Query) em.createQuery("select t.id from "+clazz.getSimpleName()+" t where hex(t.sid) = :sid");
-			query.setParameter("sid", sid);
+			Query query =  entityManager.createQuery("select p.id from " + entityName.getSimpleName() + " p where hex(p.sid) = '" + sid + "'");
 			id = (Integer) query.getSingleResult();
-			return id;
-		}catch (NoResultException e) {
-			throw new RecordNotFoundException("Entity Not Found", e);
-		} catch (Exception e){
-			throw new ApplicationException("",e);
+		}catch(Exception exception){
+			logger.error("getIdBySid()", exception);
+			throw new ApplicationException(FormsConstants.SERVER_ERROR,exception);
 		}
+		return id;
 	}
 
-	@Override
-	public <T> String getSidById(Class<T> clazz, Integer id) throws RecordNotFoundException,ApplicationException {
-		Query query=null;
+	public String getSidById(Class entityName, Integer id)
+			throws RecordNotFoundException, ApplicationException {
 		String sid = null;
 		try{
-			query = (Query) em.createQuery("select hex(t.sid) from "+clazz.getSimpleName()+" t where t.id = :id");
+			Query query =  entityManager.createQuery("select hex(p.sid) from " + entityName.getSimpleName() + " p where p.id=:id");
 			query.setParameter("id", id);
 			sid = (String) query.getSingleResult();
-		}catch (NoResultException e){
-			throw new RecordNotFoundException("No Entity found for ID : \t".concat(String.valueOf(id)),e);
-		}catch (Exception e){
-			throw new ApplicationException("",e);
+		}catch(Exception exception){
+			logger.error("getSidById()", exception);
+			throw new ApplicationException(FormsConstants.SERVER_ERROR,exception);
 		}
 		return sid;
 	}
-	
 
-	@Override
-	public <T> T findEntityBySid(Class<T> clazz, String sid) throws RecordNotFoundException,ApplicationException {
-		Query query=null;
+	public T findEntityById(Class entityName, Integer id)
+			throws RecordNotFoundException, ApplicationException {
+		T queryResult=null;
 		try{
-			query = (Query) em.createQuery(" from "+clazz.getSimpleName()+" t where hex(t.sid) = :sid");
-			query.setParameter("sid", sid);
-			return (T) query.getSingleResult();
-		}catch (NoResultException e){
-			throw new RecordNotFoundException("No Entity found for ID : \t".concat(sid),e);
-		}catch (Exception e){
-			throw new ApplicationException("",e);
-		}
-	}
-
-
-	@TransactionAttribute(TransactionAttributeType.MANDATORY)
-	@Override
-	public <T> void persist(T t) {
-		this.em.persist(t);
-	}
-	
-	@Override
-	public <T> T findEntityById(Class entityName, Integer id)throws RecordNotFoundException,ApplicationException{
-		logger.trace("findEntityById(Class, int) - start"); 
-		if(id == null || id <=0)throw new IllegalArgumentException("ID cannot be Null or Zero");
-		try{
-			Query query = em.createQuery("select e from "+ entityName.getSimpleName() + " e where e.id = :id");
+			Query query = entityManager.createQuery("select e from "+ entityName.getSimpleName() + " e where e.id = :id");
 			query.setParameter("id", id);
-			T returnT = (T) query.getSingleResult();
-			logger.trace("findEntityById(Class, int) - end"); 
-			return returnT;
-		}catch(NoResultException noResultException){
-			logger.error("findEntityById(Class, int)-{}", noResultException.getMessage()); 
-			throw new RecordNotFoundException("Record not found for ".concat(String.valueOf(id)),noResultException);
+			queryResult = (T) query.getSingleResult();
 		}catch (Exception exception) {
-			logger.error("findEntityById(Class, int)-{}", exception.getMessage()); 
-			throw new ApplicationException("",exception);
+			logger.error("findEntityById()", exception); 
+			throw new ApplicationException(FormsConstants.SERVER_ERROR, exception);
 		}
-	}
-	
-	@Override
-	public <T, U> U getToByNamedQuery(Class<T> entityClass, Class<U> dtoClass,String namedQuery, Map<String, Object> parameters, String mapId)throws RecordNotFoundException,ApplicationException {
-		logger.trace("getToByNamedQuery(Class<T>, Class<U>, String, Map<String, Object>) - Start");
-		U to = null;
-		T entity = (T) findSingleByNamedQuery(namedQuery, parameters);
-		if(entity != null){
-			to = dozerMan.getMapper().map(entity, dtoClass, mapId);
-		}
-		logger.trace("getToByNamedQuery(Class<T>, Class<U>, String, Map<String, Object>) - End");
-		return to;
-	}
-	
-	@Override
-	public <T, U> U getToByNamedQuery(Class<T> entityClass, Class<U> dtoClass,
-			String namedQuery, Map<String, Object> parameters)throws RecordNotFoundException,ApplicationException {
-		logger.trace("getToByNamedQuery(Class<T>, Class<U>, String) - Start");
-		U to = null;
-		T entity = (T) findSingleByNamedQuery(namedQuery, parameters);
-		if (entity != null) {
-			to = dozerMan.getMapper().map(entity, dtoClass);
-		}
-		logger.trace("getToByNamedQuery(Class<T>, Class<U>, String) - End");
-		return to;
+		return queryResult;
 	}
 
+	public T findEntityBySid(Class clazz, String sid)
+			throws RecordNotFoundException {
+		T queryResult=null;
+		try{
+			Query query = (Query) getEntityManager().createQuery("from "+clazz.getSimpleName()+" t where hex(t.sid) = :sid");
+			query.setParameter("sid", sid);
+			queryResult= (T) query.getSingleResult();
+		}catch (Exception exception){
+			logger.error("getEntityBySid() ", exception);
+			throw new RecordNotFoundException(FormsConstants.SERVER_ERROR, exception);
+		}
+		return queryResult;
+	}
+	public T findToObjectBySid(@SuppressWarnings("rawtypes") Class clazz,String sid,Class convertedClass) throws ApplicationException{
+		T queryResult=null;
+		try{
+			T resultT=getEntityBySid(clazz, sid);
+			queryResult=(T) dozerMan.getMapper().map(resultT, convertedClass);
+		}catch(Exception e){
+			logger.error("findToObjectBySid()",e);
+			throw new ApplicationException(FormsConstants.SERVER_ERROR,e);
+		}
+		return queryResult;
+	}
+	public <T, U> U getToByNamedQuery(Class entityClass, Class<U> dtoClass,
+			String namedQuery, Map<String, Object> parameters, String mapId)
+			throws RecordNotFoundException, ApplicationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public <T, U> U getToByNamedQuery(Class entityClass, Class<U> dtoClass,
+			String namedQuery, Map<String, Object> parameters)
+			throws RecordNotFoundException, ApplicationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+
+	public List<T> findListByNamedNativeQueryWithParam(String queryName,
+			Map<String, Object> parameters) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public List<T> findListByNamedNativeQueryWithParamAndLimit(
+			String queryName, Map<String, Object> parameters, int resultLimit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+  
+	
 }

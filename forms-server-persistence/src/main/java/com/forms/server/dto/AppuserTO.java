@@ -1,8 +1,12 @@
 package com.forms.server.dto;
 
-import java.io.Serializable;
 import java.util.Date;
-
+import java.util.List;
+/**
+ * 
+ * @author vikash
+ *
+ */
 public class AppuserTO extends SuperCommonDTO{
 	
 	private static final long serialVersionUID = 1L;
@@ -11,7 +15,7 @@ public class AppuserTO extends SuperCommonDTO{
 
 	private Date accountLastAccessed;
 
-	private String contactPhoneNumer;
+	private String contactPhoneNumber;
 
 	private String firstName;
 
@@ -24,6 +28,8 @@ public class AppuserTO extends SuperCommonDTO{
 	private String preferredLanguage;
 
 	private String username;
+	
+	private List<SecurityQuestionsTO> securityQuestionsTOs;
 
 	//bi-directional many-to-one association to Form
 /*	@OneToMany(mappedBy="appuser",fetch=FetchType.LAZY)
@@ -48,12 +54,12 @@ public class AppuserTO extends SuperCommonDTO{
 		this.accountLastAccessed = accountLastAccessed;
 	}
 
-	public String getContactPhoneNumer() {
-		return this.contactPhoneNumer;
+	public String getContactPhoneNumber() {
+		return contactPhoneNumber;
 	}
 
-	public void setContactPhoneNumer(String contactPhoneNumer) {
-		this.contactPhoneNumer = contactPhoneNumer;
+	public void setContactPhoneNumber(String contactPhoneNumber) {
+		this.contactPhoneNumber = contactPhoneNumber;
 	}
 
 	public String getFirstName() {
@@ -104,6 +110,19 @@ public class AppuserTO extends SuperCommonDTO{
 		this.username = username;
 	}
 
+	public List<SecurityQuestionsTO> getSecurityQuestionsTOs() {
+		return securityQuestionsTOs;
+	}
+
+	public void setSecurityQuestionsTOs(
+			List<SecurityQuestionsTO> securityQuestionsTOs) {
+		this.securityQuestionsTOs = securityQuestionsTOs;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
+    
 /*	public List<Form> getForms() {
 		return this.forms;
 	}

@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="FormsDS" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <jta-data-source>java:jboss/datasources/FormsDS</jta-data-source>
-    <class>com.forms.server.entities.SecurityQuestions</class>
-    <class>com.forms.server.entities.AppuserSecurityAnswer</class>
-    <properties>
-      <property name="hibernate.connection.release_mode" value="after_transaction"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
-      <property name="hibernate.show_sql" value="true"/>
-    </properties>
-    <class>com.forms.server.entities.Appuser</class>
-    <class>com.forms.server.entities.District</class>
-    <class>com.forms.server.entities.FinancialYear</class>
-    <class>com.forms.server.entities.Form</class>
-    <class>com.forms.server.entities.Question</class>
-    <class>com.forms.server.entities.Section</class>
-    <class>com.forms.server.entities.SectionHasQuestion</class>
-    <class>com.forms.server.entities.SectionHasQuestionPK</class>
-    <class>com.forms.server.entities.SocietyName</class>
-  </persistence-unit>
+<persistence version="2.0"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+	<persistence-unit name="FormsDS" transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/FormsDS</jta-data-source>
+		<properties>
+			<property name="hibernate.connection.release_mode" value="after_transaction" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.show_sql" value="true" />
+		</properties>
+		<class>com.forms.server.entities.Appuser</class>
+		<class>com.forms.server.entities.District</class>
+		<class>com.forms.server.entities.FinancialYear</class>
+		<class>com.forms.server.entities.Form</class>
+		<class>com.forms.server.entities.Question</class>
+		<class>com.forms.server.entities.Section</class>
+		<class>com.forms.server.entities.SectionHasQuestion</class>
+		<class>com.forms.server.entities.SectionHasQuestionPK</class>
+		<class>com.forms.server.entities.SocietyName</class>
+		<class>com.forms.server.entities.SecurityQuestions</class>
+		<class>com.forms.server.entities.AppuserSecurityAnswer</class>
+	</persistence-unit>
 </persistence>

@@ -1,12 +1,13 @@
 package com.forms.server.exception.persistence;
 
 import com.forms.server.exception.ApplicationException;
-
+/**
+ * 
+ * @author vikash
+ *
+ */
 public class InvalidSidException extends ApplicationException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3478839877491477417L;
 	
 	public InvalidSidException() {

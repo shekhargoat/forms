@@ -3,6 +3,7 @@ package com.forms.server.service;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -13,7 +14,6 @@ import com.forms.server.cruddao.api.IAppuserService;
 import com.forms.server.dto.AppuserTO;
 import com.forms.server.exception.ApplicationException;
 import com.forms.server.exception.persistence.RecordNotFoundException;
-import javax.ws.rs.HeaderParam;
 
 
 @Path("/v1/login")
@@ -28,13 +28,10 @@ public class FormLoginService {
 	public Response getInitialJson(@PathParam("id") Integer id){
 		try {
 			AppuserTO appuserTO=appuserService.findAppuserById(id);
-//			return buildSuccessResponse(appuserTO);
 			return Response.status(200).entity(appuserTO).build();
 		} catch (RecordNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ApplicationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return Response.status(200).build();

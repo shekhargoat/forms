@@ -6,8 +6,9 @@ import java.util.List;
 
 
 /**
- * The persistent class for the society_name database table.
  * 
+ * @author vikash
+ *
  */
 @Entity
 @Table(name="society_name")

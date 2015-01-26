@@ -1,17 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.forms.server.exception;
-
 /**
+ * 
+ * @author vikash
  *
- * @author ag
  */
 public class InvalidActivationKey extends ApplicationException {
+	private static final long serialVersionUID = 3101410059508467087L;
 
-    public InvalidActivationKey() {
+	public InvalidActivationKey() {
     }
 
     public InvalidActivationKey(String errorMessage, String uiErrorCode, Throwable throwable) {

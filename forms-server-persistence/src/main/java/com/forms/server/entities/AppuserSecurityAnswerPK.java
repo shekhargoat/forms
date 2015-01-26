@@ -1,21 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.forms.server.entities;
 
 import java.io.Serializable;
-import javax.persistence.Embeddable;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 /**
+ * 
+ * @author vikash
  *
- * @author SSD
  */
 @Embeddable
 public class AppuserSecurityAnswerPK implements Serializable{
     
-    private Integer appuserId;
+	private static final long serialVersionUID = 8911654544495439040L;
+	@Column(name="appuser_id")
+	private Integer appuserId;
+	@Column(name="security_question_id")
     private Integer securityQuestionId;
 
     public Integer getAppuserId() {
@@ -41,5 +41,4 @@ public class AppuserSecurityAnswerPK implements Serializable{
         this.appuserId = appuserId;
         this.securityQuestionId = securityQuestionId;
     }
-    
 }

@@ -2,6 +2,11 @@ package com.forms.server.dto;
 import java.io.Serializable;
 import java.util.UUID;
 
+import javax.ejb.EJB;
+
+import com.forms.server.cruddao.DozerMan;
+import com.forms.server.cruddao.api.IBaseApplicationService;
+
 // TODO: Auto-generated Javadoc
 
 /**
@@ -23,6 +28,7 @@ public abstract class SuperCommonDTO implements Serializable {
 	/** The sid. */
 
 	public String sid;
+	
 	
 	public SuperCommonDTO() {
 	}
@@ -115,4 +121,5 @@ public abstract class SuperCommonDTO implements Serializable {
 	    }
 	    return new String(hexChars);
 	}
+	
 }

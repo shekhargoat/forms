@@ -11,5 +11,18 @@
 			<a get-method="bytesToHexString">sid</a>
 			<b>sid</b>
 		</field>
+		<field-exclude>
+		    <a>id</a>
+		    <b>id</b>
+		</field-exclude>
+	</mapping>
+	<mapping type="one-way">
+		<class-a>com.forms.server.dto.SuperCommonDTO
+		</class-a>
+		<class-b>com.forms.server.entities.BaseEntity</class-b>
+		<field>
+			<a get-method="hexStringToByteArray">sid</a>
+			<b>sid</b>
+		</field>
 	</mapping>
 </mappings>

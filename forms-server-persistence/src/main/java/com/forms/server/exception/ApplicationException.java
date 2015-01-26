@@ -1,10 +1,11 @@
 package com.forms.server.exception;
-
+/**
+ * 
+ * @author vikash
+ *
+ */
 public class ApplicationException extends Exception {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 9016054302373139810L;
 
 	private ErrorInfo errorInfo;

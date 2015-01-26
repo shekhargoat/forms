@@ -8,9 +8,6 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class BaseEntity extends SuperCompositeEntity {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3674555085287246933L;
 	
 	@Id
@@ -19,22 +16,12 @@ public abstract class BaseEntity extends SuperCompositeEntity {
 	
 	public BaseEntity() {
 	}
-
-
 	public Integer getId() {
 		return id;
 	}
-
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
-	/*@Override
-	public int hashCode() {
-		return id.hashCode();
-	}*/
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

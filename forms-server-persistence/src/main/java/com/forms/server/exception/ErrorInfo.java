@@ -1,5 +1,9 @@
 package com.forms.server.exception;
-
+/**
+ * 
+ * @author Vikash
+ *
+ */
 public class ErrorInfo {
 	
 	public ErrorInfo(String errorMessage, String uiErrorCode) {

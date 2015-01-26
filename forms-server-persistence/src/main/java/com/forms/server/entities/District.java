@@ -1,24 +1,26 @@
 package com.forms.server.entities;
 
-import java.io.Serializable;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 
 /**
  * The persistent class for the districts database table.
- * 
+ * @author vikash
  */
 @Entity
 @Table(name="districts")
-public class District implements Serializable {
-	private static final long serialVersionUID = 1L;
+@NamedQueries({@NamedQuery(name = District.FIND_BY_STATE_CODE, query = "from District d where d.stateName=:stateCode")
+})
+public class District extends BaseEntity {
+	private static final String PREFIX="com.forms.server.entities.District.";
+    public static final String FIND_BY_STATE_CODE=PREFIX+"findDistrictsByStateCode";
 
-	@Id
-	private int id;
-
-	private String name;
-
-	private String sid;
+    private String name;
 
 	@Column(name="state_name")
 	private String stateName;
@@ -30,28 +32,12 @@ public class District implements Serializable {
 	public District() {
 	}
 
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public String getName() {
 		return this.name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getSid() {
-		return this.sid;
-	}
-
-	public void setSid(String sid) {
-		this.sid = sid;
 	}
 
 	public String getStateName() {

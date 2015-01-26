@@ -1,41 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.forms.server.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
 /**
+ * 
+ * @author vikash
  *
- * @author SSD
  */
 @Entity
 @Table(name = "security_questions")
 @NamedQueries({
-@NamedQuery(name = SecurityQuestions.FIND_ALL,query = "from SecurityQuestions")})
+@NamedQuery(name = SecurityQuestions.FIND_ALL,query = "select s from SecurityQuestions s")})
 public class SecurityQuestions extends BaseEntity{
 
-    private static final String PREFIX="com.forms.server.entities.SecurityQuestions.";
+	private static final long serialVersionUID = -3210881912803759797L;
+
+	private static final String PREFIX="com.forms.server.entities.SecurityQuestions.";
     
     public static final String FIND_ALL=PREFIX+"findAll";
     
-    private boolean status;
-    
+    @Column(name="name")
     private String question;
     
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
     public String getQuestion() {
         return question;
     }

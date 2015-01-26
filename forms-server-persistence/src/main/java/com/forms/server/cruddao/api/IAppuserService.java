@@ -1,12 +1,18 @@
 package com.forms.server.cruddao.api;
 
 import com.forms.server.dto.AppuserTO;
+import com.forms.server.dto.DistrictTO;
+import com.forms.server.dto.DistrictTO.StateCode;
+import com.forms.server.dto.LanguageTO;
 import com.forms.server.dto.SecurityQuestionsTO;
+import com.forms.server.dto.StateTO;
 import com.forms.server.exception.ActivationKeyExpired;
 import com.forms.server.exception.ApplicationException;
 import com.forms.server.exception.InvalidActivationKey;
 import com.forms.server.exception.persistence.RecordNotFoundException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -32,7 +38,7 @@ public interface IAppuserService {
 	 * @throws RecordNotFoundException the record not found exception
 	 * @throws ApplicationException the application exception
 	 */
-	public AppuserTO findAppuserByUsername(String username)throws RecordNotFoundException,ApplicationException;
+	public Boolean findAppuserByUsername(String username)throws RecordNotFoundException,ApplicationException;
 	
 	/**
 	 * Find appuser by sid.
@@ -53,26 +59,40 @@ public interface IAppuserService {
          * @throws ApplicationException
          */
         public boolean authenticateUser(String username,String password) throws ApplicationException;
-        
-        /**
-         * Checks if the password exists
-         * 
-         * @param password
-         * @return
-         * @throws RecordNotFoundException
-         * @throws ApplicationException
-         */
-        public boolean doesPwdExists(String password)throws RecordNotFoundException, ApplicationException;
-        
         /**
          * Get all security questions
-         * 
          * @return List of all Security Questions in the DB
          * @throws RecordNotFoundException
+         * @throws ApplicationException 
          */
-        public List<SecurityQuestionsTO> getAllSecurityQuestions() throws RecordNotFoundException; 
+        public List<SecurityQuestionsTO> getAllSecurityQuestions() throws RecordNotFoundException, ApplicationException; 
         
         public boolean verifyActivationLink(String appuserSid,String activationKey) throws InvalidActivationKey, ActivationKeyExpired, ApplicationException;
-        
-        public boolean userSignup(AppuserTO appuserTO)throws IllegalArgumentException;
+        /**
+         * 
+         * @param appuserTO
+         * @return
+         * @throws IllegalArgumentException
+         * @throws ApplicationException 
+         */
+        public boolean userSignup(AppuserTO appuserTO,HttpServletRequest request)throws IllegalArgumentException, ApplicationException;
+        /**
+         * API to get list of district by state code
+         * @param stateCode
+         * @return List<DistrictTO>
+         * @throws ApplicationException
+         */
+		public List<DistrictTO> listOfDistrictByStateCode(StateCode stateCode) throws ApplicationException;
+        /**
+         * API to get all the list of state
+         * @return List<StateTO>
+         * @throws ApplicationException
+         */
+		public List<StateTO> listOfState() throws ApplicationException;
+        /**
+         * API to get all the list of language
+         * @return List<LanguageTO>
+         * @throws ApplicationException
+         */
+		public List<LanguageTO> listOfLanguage() throws ApplicationException;
 }
